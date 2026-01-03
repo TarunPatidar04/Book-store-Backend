@@ -53,7 +53,7 @@ export const verifyEmail = async (req: Request, res: Response) => {
     user.verificationToken = undefined;
     const accessToken = generateToken(user);
 
-    res.cookie("accessToken", accessToken, {
+    res.cookie("access_token", accessToken, {
       httpOnly: true,
       // secure: true,
       // sameSite: "strict",
@@ -62,6 +62,39 @@ export const verifyEmail = async (req: Request, res: Response) => {
 
     await user.save();
     return responseHandler(res, 200, "Email verified successfully");
+  } catch (error) {
+    console.log(error);
+    return responseHandler(res, 500, "Internal server error");
+  }
+};
+
+export const login = async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await UserModel.findOne({ email });
+
+    if (!user || !(await user.comparePassword(password))) {
+      return responseHandler(res, 400, "Invalid email or password");
+    }
+
+    if (!user.isVerified) {
+      return responseHandler(res, 400, "Please verify your email");
+    }
+
+    const accessToken = generateToken(user);
+
+    res.cookie("access_token", accessToken, {
+      httpOnly: true,
+      // secure: true,
+      // sameSite: "strict",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
+    return responseHandler(res, 200, "Login successfully", {
+      user: { name: user.name, email: user.email },
+      // accessToken,
+    });
   } catch (error) {
     console.log(error);
     return responseHandler(res, 500, "Internal server error");
