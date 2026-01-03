@@ -3,6 +3,7 @@ import UserModel from "../models/User.model";
 import { responseHandler } from "../utils/responseHandler";
 import crypto from "crypto";
 import { sendVerificationEmail } from "../config/emailConfig";
+import { generateToken } from "../utils/generateToken";
 
 export const register = async (req: Request, res: Response) => {
   try {
@@ -32,6 +33,35 @@ export const register = async (req: Request, res: Response) => {
       201,
       "User registered successfully, Please check your email for verification"
     );
+  } catch (error) {
+    console.log(error);
+    return responseHandler(res, 500, "Internal server error");
+  }
+};
+
+export const verifyEmail = async (req: Request, res: Response) => {
+  try {
+    const token = req.params;
+
+    const user = await UserModel.findOne({ verificationToken: token });
+
+    if (!user) {
+      return responseHandler(res, 400, "Invalid verification token");
+    }
+
+    user.isVerified = true;
+    user.verificationToken = undefined;
+    const accessToken = generateToken(user);
+
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      // secure: true,
+      // sameSite: "strict",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
+    await user.save();
+    return responseHandler(res, 200, "Email verified successfully");
   } catch (error) {
     console.log(error);
     return responseHandler(res, 500, "Internal server error");
