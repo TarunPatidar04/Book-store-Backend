@@ -171,3 +171,38 @@ export const logout = async (req: Request, res: Response) => {
     return responseHandler(res, 500, "Internal server error");
   }
 };
+
+export const checkUserAuth = async (req: Request, res: Response) => {
+  try {
+    const userId = req?.id;
+    if (!userId) {
+      return responseHandler(
+        res,
+        400,
+        "unAuthenciated, please login to access our data"
+      );
+    }
+
+    const user = await UserModel.findById(userId).select(
+      "-password -verificationToken -resetPasswordToken -resetPasswordExpire"
+    );
+
+    if (!user) {
+      return responseHandler(res, 403, "User not found");
+    }
+
+    return responseHandler(
+      res,
+      200,
+      "User Authenticated(retrived) successfully",
+      user
+    );
+  } catch (error) {
+    console.log(error);
+    return responseHandler(
+      res,
+      500,
+      "Not Authorized, Token Not valid or expired"
+    );
+  }
+};
