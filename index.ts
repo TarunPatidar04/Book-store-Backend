@@ -6,6 +6,7 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { connectDB } from "./src/config/db";
 import authRouter from "./src/routes/authRouter";
+import productRouter from "./src/routes/productRouter";
 
 const corsOptions = {
   origin: process.env.FRONTEND_URL || "*",
@@ -23,6 +24,7 @@ app.use(cookieParser());
 const PORT = process.env.PORT || 8000;
 
 app.use("/api/auth", authRouter);
+app.use("/api/product", productRouter);
 
 app.get("/", (req, res) => {
   console.log("start a server");
