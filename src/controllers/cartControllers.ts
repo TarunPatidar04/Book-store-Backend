@@ -14,13 +14,13 @@ export const addToCart = async (req: Request, res: Response) => {
       return responseHandler(res, 404, "Product not found");
     }
 
-    if (product.seller.toString() === userId) {
-      return responseHandler(
-        res,
-        400,
-        "You cannot add your own product to the cart"
-      );
-    }
+    // if (product.seller.toString() === userId) {
+    //   return responseHandler(
+    //     res,
+    //     400,
+    //     "You cannot add your own product to the cart"
+    //   );
+    // }
 
     let cart = await CartItems.findOne({ user: userId });
     if (!cart) {
@@ -36,7 +36,43 @@ export const addToCart = async (req: Request, res: Response) => {
       cart.items.push(newItem as ICartItem);
     }
     await cart.save();
-    return responseHandler(res, 200, "Product added to cart");
+    return responseHandler(res, 200, "Product added to cart", cart);
+  } catch (error) {
+    console.log(error);
+    return responseHandler(res, 500, "Internal Server Error");
+  }
+};
+
+export const removeFromCart = async (req: Request, res: Response) => {
+  try {
+    const { productId } = req.params;
+    const userId = req.id;
+
+    let cart = await CartItems.findOne({ user: userId });
+    if (!cart) {
+      return responseHandler(res, 404, "Cart not found for this User");
+    }
+
+    cart.items = cart.items.filter(
+      (item) => item.product.toString() !== productId
+    );
+    await cart.save();
+    return responseHandler(res, 200, "Product removed from cart");
+  } catch (error) {
+    console.log(error);
+    return responseHandler(res, 500, "Internal Server Error");
+  }
+};
+
+export const getCartByUser = async (req: Request, res: Response) => {
+  try {
+    const userId = req.params.userId;
+
+    let cart = await CartItems.findOne({ user: userId });
+    if (!cart) {
+      return responseHandler(res, 404, "Cart is Empty", { items: [] });
+    }
+    return responseHandler(res, 200, "User Cart get successfully", cart);
   } catch (error) {
     console.log(error);
     return responseHandler(res, 500, "Internal Server Error");
