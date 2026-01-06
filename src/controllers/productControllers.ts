@@ -29,32 +29,32 @@ export const createProduct = async (req: Request, res: Response) => {
       return responseHandler(res, 400, "Please upload at least one image");
     }
 
-    // let parsedPaymentsDetails = JSON.parse(paymentDetails);
-    // if (
-    //   (paymentMode == "UPI" && !parsedPaymentsDetails) ||
-    //   !parsedPaymentsDetails.upiId
-    // ) {
-    //   return responseHandler(
-    //     res,
-    //     400,
-    //     "UPI ID is Required ||Invalid Payment Details"
-    //   );
-    // }
+    let parsedPaymentsDetails = JSON.parse(paymentDetails);
+    if (
+      (paymentMode == "UPI" && !parsedPaymentsDetails) ||
+      !parsedPaymentsDetails.upiId
+    ) {
+      return responseHandler(
+        res,
+        400,
+        "UPI ID is Required ||Invalid Payment Details"
+      );
+    }
 
-    // if (
-    //   paymentMode === "Bank Account" &&
-    //   (!parsedPaymentsDetails ||
-    //     !parsedPaymentsDetails.bankDetails ||
-    //     !parsedPaymentsDetails.bankDetails.accountNumber ||
-    //     !parsedPaymentsDetails.bankDetails.ifscCode ||
-    //     !parsedPaymentsDetails.bankDetails.bankName)
-    // ) {
-    //   return responseHandler(
-    //     res,
-    //     400,
-    //     "Bank Details are Required ||Invalid Payment Details"
-    //   );
-    // }
+    if (
+      paymentMode === "Bank Account" &&
+      (!parsedPaymentsDetails ||
+        !parsedPaymentsDetails.bankDetails ||
+        !parsedPaymentsDetails.bankDetails.accountNumber ||
+        !parsedPaymentsDetails.bankDetails.ifscCode ||
+        !parsedPaymentsDetails.bankDetails.bankName)
+    ) {
+      return responseHandler(
+        res,
+        400,
+        "Bank Details are Required ||Invalid Payment Details"
+      );
+    }
     const uploadPromise = images.map((file) => uploadToCloudinary(file as any));
     const uploadImages = await Promise.all(uploadPromise);
     const imageUrl = uploadImages.map((image) => image.secure_url);
@@ -75,7 +75,7 @@ export const createProduct = async (req: Request, res: Response) => {
       shippingCharge,
       paymentMode,
       seller: sellerId,
-      // paymentDetails: parsedPaymentsDetails,
+      paymentDetails: parsedPaymentsDetails,
     });
 
     await product.save();

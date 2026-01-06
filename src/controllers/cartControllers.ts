@@ -14,13 +14,13 @@ export const addToCart = async (req: Request, res: Response) => {
       return responseHandler(res, 404, "Product not found");
     }
 
-    // if (product.seller.toString() === userId) {
-    //   return responseHandler(
-    //     res,
-    //     400,
-    //     "You cannot add your own product to the cart"
-    //   );
-    // }
+    if (product.seller.toString() === userId) {
+      return responseHandler(
+        res,
+        400,
+        "You cannot add your own product to the cart"
+      );
+    }
 
     let cart = await CartItems.findOne({ user: userId });
     if (!cart) {
