@@ -13,5 +13,15 @@ router.post(
 
 router.get("/", authenticatedUser, ProductController.getAllProducts);
 router.get("/:id", authenticatedUser, ProductController.getProductById);
+router.get(
+  "/seller/:sellerId",
+  authenticatedUser,
+  ProductController.getProductBySellerId
+);
+router.delete(
+  "/seller/:productId",
+  authenticatedUser,
+  ProductController.deleteProduct
+);
 
 export default router;

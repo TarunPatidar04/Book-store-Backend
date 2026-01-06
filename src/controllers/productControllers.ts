@@ -136,3 +136,49 @@ export const getProductById = async (req: Request, res: Response) => {
     return responseHandler(res, 500, "Internal Server Error");
   }
 };
+
+export const deleteProduct = async (req: Request, res: Response) => {
+  try {
+    const { productId } = req.params;
+    const product = await Product.findByIdAndDelete(productId);
+
+    if (!product) {
+      return responseHandler(res, 404, "Product not found");
+    }
+
+    return responseHandler(res, 200, "Product deleted Successfully...");
+  } catch (error) {
+    console.log(error);
+    return responseHandler(res, 500, "Internal Server Error");
+  }
+};
+
+export const getProductBySellerId = async (req: Request, res: Response) => {
+  try {
+    const { sellerId } = req.params;
+    if (!sellerId) {
+      return responseHandler(
+        res,
+        400,
+        "Seller Id is not found || Invalid Seller Id"
+      );
+    }
+    const product = await Product.find({ seller: sellerId })
+      .sort({ createdAt: -1 })
+      .populate("seller", "name email profilePicture phoneNumber addresses");
+
+    if (!product) {
+      return responseHandler(res, 404, "Product not found for this seller");
+    }
+
+    return responseHandler(
+      res,
+      200,
+      "Product fetched by Seller Id Successfully...",
+      product
+    );
+  } catch (error) {
+    console.log(error);
+    return responseHandler(res, 500, "Internal Server Error");
+  }
+};
