@@ -90,3 +90,21 @@ export const createProduct = async (req: Request, res: Response) => {
     return responseHandler(res, 500, "Internal Server Error");
   }
 };
+
+export const getAllProducts = async (req: Request, res: Response) => {
+  try {
+    const products = await Product.find()
+      .sort({ createdAt: -1 })
+      .populate("seller", "name email");
+
+    return responseHandler(
+      res,
+      200,
+      "Products fetched Successfully...",
+      products
+    );
+  } catch (error) {
+    console.log(error);
+    return responseHandler(res, 500, "Internal Server Error");
+  }
+};
