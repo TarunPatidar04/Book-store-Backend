@@ -41,7 +41,12 @@ export const createOrUpdateByUserId = async (req: Request, res: Response) => {
       existingAddress.state = state;
       existingAddress.pinCode = pincode;
       await existingAddress.save();
-      return responseHandler(res, 200, "Address updated successfully");
+      return responseHandler(
+        res,
+        200,
+        "Address updated successfully",
+        existingAddress
+      );
     } else {
       const newAddress = new AddressModel({
         user: userId,
@@ -67,6 +72,22 @@ export const createOrUpdateByUserId = async (req: Request, res: Response) => {
         newAddress
       );
     }
+  } catch (error) {
+    return responseHandler(res, 500, "Internal server error");
+  }
+};
+
+export const getAllAddressByUserId = async (req: Request, res: Response) => {
+  try {
+    const userId = req.id;
+    if (!userId) {
+      return responseHandler(res, 400, "User Id not found in get Address");
+    }
+    const user = await UserModel.findById(userId).populate("addresses");
+    if (!user) {
+      return responseHandler(res, 400, "User not found in get Address");
+    }
+    return responseHandler(res, 200, "User Address get successfully", user);
   } catch (error) {
     return responseHandler(res, 500, "Internal server error");
   }
