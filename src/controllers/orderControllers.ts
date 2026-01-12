@@ -86,12 +86,9 @@ export const getOrderById = async (req: Request, res: Response) => {
 export const getOrderByUser = async (req: Request, res: Response) => {
   try {
     const userId = req.id;
-    if (!userId) {
-      return responseHandler(res, 400, "User Id not found in get Order");
-    }
 
     const order = await orderModel
-      .findById(userId)
+      .find({ user: userId })
       .sort({ createdAt: -1 })
       .populate("user", "name email")
       .populate("shippingAddress")
@@ -99,6 +96,8 @@ export const getOrderByUser = async (req: Request, res: Response) => {
         path: "items.product",
         model: "Product",
       });
+
+    console.log("order", order);
 
     if (!order) {
       return responseHandler(res, 400, "Order not found");
