@@ -9,11 +9,11 @@ export const updateUserProfile = async (req: Request, res: Response) => {
     if (!userId) {
       return responseHandler(res, 400, "User Id is required");
     }
-    const { name, email, phonenumber } = req.body;
+    const { name, email, phoneNumber } = req.body;
 
     const updateUser = await UserModel.findByIdAndUpdate(
       userId,
-      { name, email, phonenumber },
+      { name, email, phoneNumber },
       { new: true, runValidators: true }
     ).select(
       "-password -verificationToken -resetPasswordToken -resetPasswordExpire"
@@ -33,6 +33,3 @@ export const updateUserProfile = async (req: Request, res: Response) => {
     return responseHandler(res, 500, "Internal server error");
   }
 };
-
-
-
