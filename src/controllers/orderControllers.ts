@@ -15,7 +15,7 @@ export const createOrUpdateOrder = async (req: Request, res: Response) => {
     } = req.body;
 
     const cart = await CartItems.findOne({ user: userId }).populate(
-      "Items.product"
+      "items.product"
     );
     if (!cart || cart.items.length === 0) {
       return responseHandler(res, 400, "Cart is Empty");
