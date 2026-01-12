@@ -11,6 +11,8 @@ import cartRouter from "./src/routes/cartRouter";
 import wishListRouter from "./src/routes/wishListRouter";
 import addressRouter from "./src/routes/addressRouter";
 import userRouter from "./src/routes/userRouter";
+import orderRouter from "./src/routes/orderRouter";
+
 const corsOptions = {
   origin: process.env.FRONTEND_URL || "*",
   credentials: true,
@@ -32,6 +34,7 @@ app.use("/api/cart", cartRouter);
 app.use("/api/wishlist", wishListRouter);
 app.use("/api/user/address", addressRouter);
 app.use("/api/user", userRouter);
+app.use("/api/order", orderRouter);
 
 app.get("/", (req, res) => {
   console.log("start a server");
