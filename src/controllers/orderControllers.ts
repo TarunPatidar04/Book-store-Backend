@@ -2,6 +2,14 @@ import { Request, Response } from "express";
 import { responseHandler } from "../utils/responseHandler";
 import { CartItems } from "../models/CartItems";
 import orderModel from "../models/order.model";
+import Razorpay from "razorpay";
+import dotenv from "dotenv";
+dotenv.config();
+
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID as string,
+  key_secret: process.env.RAZORPAY_KEY_SECRET as string,
+});
 
 export const createOrUpdateOrder = async (req: Request, res: Response) => {
   try {
@@ -97,8 +105,6 @@ export const getOrderByUser = async (req: Request, res: Response) => {
         model: "Product",
       });
 
-    console.log("order", order);
-
     if (!order) {
       return responseHandler(res, 400, "Order not found");
     }
@@ -108,3 +114,35 @@ export const getOrderByUser = async (req: Request, res: Response) => {
     return responseHandler(res, 500, "Internal server error");
   }
 };
+
+export const createPaymentWithRazorpay = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const orderId = req.body;
+    const order = await orderModel.findById(orderId);
+
+    if (!order) {
+      return responseHandler(res, 400, "Order not found");
+    }
+
+    const razorPayOrder = await razorpay.orders.create({
+      amount: Math.round(order.totalAmount * 100),
+      currency: "INR",
+      receipt: order?._id.toString(),
+    });
+
+    return responseHandler(
+      res,
+      200,
+      "RazorPay Order and Payment created successfully",
+      { order: razorPayOrder }
+    );
+  } catch (error) {
+    return responseHandler(res, 500, "Internal server error");
+  }
+};
+
+
+
