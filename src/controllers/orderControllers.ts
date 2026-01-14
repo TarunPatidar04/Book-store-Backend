@@ -4,6 +4,7 @@ import { CartItems } from "../models/CartItems";
 import orderModel from "../models/order.model";
 import Razorpay from "razorpay";
 import dotenv from "dotenv";
+import crypto from "crypto";
 dotenv.config();
 
 const razorpay = new Razorpay({
@@ -144,5 +145,35 @@ export const createPaymentWithRazorpay = async (
   }
 };
 
+export const handleRazorPayWebhook = async (req: Request, res: Response) => {
+  try {
+    const secret = process.env.RAZORPAY_WEBHOOK_SECRET as string;
 
+    const shasum = crypto.createHmac("sha256", secret);
+    shasum.update(JSON.stringify(req.body));
+    const digest = shasum.digest("hex");
 
+    if (digest === req.headers["x-razorpay-signature"]) {
+      const paymentId = req.body.payload.payment.entity.id;
+      const orderId = req.body.payload.payment.entity.order.id;
+
+      await orderModel.findOneAndUpdate(
+        { "paymentDetails.razorpay_order_id": orderId },
+        {
+          paymentStatus: "completed",
+          status: "processing",
+          "paymentDetails.razorpay_payment_id": paymentId,
+        }
+      );
+      return responseHandler(
+        res,
+        200,
+        "Webhook Process || Payment completed successfully"
+      );
+    } else {
+      return responseHandler(res, 400, "Invalid signature");
+    }
+  } catch (error) {
+    return responseHandler(res, 500, "Internal server error");
+  }
+};
