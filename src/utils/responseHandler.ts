@@ -4,10 +4,10 @@ export const responseHandler = (
   res: Response,
   statusCode: number,
   message: string,
-  data?: any
+  data?: any,
 ) => {
   return res.status(statusCode).json({
-    sucess: statusCode >= 200 && statusCode < 300,
+    success: statusCode >= 200 && statusCode < 300,
     message,
     data: data || null,
   });
