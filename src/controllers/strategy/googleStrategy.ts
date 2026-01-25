@@ -36,7 +36,7 @@ passport.use(
           email: emails?.[0]?.value,
           name: displayName,
           profilePicture: photos?.[0]?.value,
-          isVerified: true,
+          isVerified: emails?.[0]?.verified,
           agreeTerms: true,
         });
         return done(null, user);

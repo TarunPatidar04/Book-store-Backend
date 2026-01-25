@@ -17,7 +17,7 @@ router.get("/verify-auth", authenticatedUser, authController.checkUserAuth);
 
 router.get(
   "/google",
-  passport.authenticate("google", { scope: ["email", "profile"] })
+  passport.authenticate("google", { scope: ["email", "profile"] }),
 );
 
 router.get(
@@ -30,7 +30,7 @@ router.get(
     try {
       const user = req.user as IUser;
       const accessToken = await generateToken(user);
-      res.cookie("accessToken", accessToken, {
+      res.cookie("access_token", accessToken, {
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000,
       });
@@ -38,6 +38,6 @@ router.get(
     } catch (error) {
       next(error);
     }
-  }
+  },
 );
 export default router;
