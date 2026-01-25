@@ -44,7 +44,7 @@ export const register = async (req: Request, res: Response) => {
 
 export const verifyEmail = async (req: Request, res: Response) => {
   try {
-    const token = req.params;
+    const {token} = req.params;
 
     const user = await UserModel.findOne({ verificationToken: token });
 
