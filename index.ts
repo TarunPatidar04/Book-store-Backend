@@ -12,6 +12,7 @@ import wishListRouter from "./src/routes/wishListRouter";
 import addressRouter from "./src/routes/addressRouter";
 import userRouter from "./src/routes/userRouter";
 import orderRouter from "./src/routes/orderRouter";
+import passport from "./src/controllers/strategy/googleStrategy";
 
 const corsOptions = {
   origin: process.env.FRONTEND_URL || "*",
@@ -25,6 +26,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(passport.initialize());
 
 const PORT = process.env.PORT || 8000;
 
