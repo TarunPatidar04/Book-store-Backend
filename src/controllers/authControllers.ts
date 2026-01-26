@@ -132,7 +132,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
 export const resetPassword = async (req: Request, res: Response) => {
   try {
-    const token = req.params;
+    const {token} = req.params;
     const { newPassword } = req.body;
 
     const user = await UserModel.findOne({
