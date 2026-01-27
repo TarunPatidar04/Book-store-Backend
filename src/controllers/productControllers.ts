@@ -37,7 +37,7 @@ export const createProduct = async (req: Request, res: Response) => {
       return responseHandler(
         res,
         400,
-        "UPI ID is Required ||Invalid Payment Details"
+        "UPI ID is Required ||Invalid Payment Details",
       );
     }
 
@@ -52,7 +52,7 @@ export const createProduct = async (req: Request, res: Response) => {
       return responseHandler(
         res,
         400,
-        "Bank Details are Required ||Invalid Payment Details"
+        "Bank Details are Required ||Invalid Payment Details",
       );
     }
     const uploadPromise = images.map((file) => uploadToCloudinary(file as any));
@@ -83,7 +83,7 @@ export const createProduct = async (req: Request, res: Response) => {
       res,
       200,
       "Product created Successfully...",
-      product
+      product,
     );
   } catch (error) {
     console.log(error);
@@ -101,7 +101,7 @@ export const getAllProducts = async (req: Request, res: Response) => {
       res,
       200,
       "Products fetched Successfully...",
-      products
+      products,
     );
   } catch (error) {
     console.log(error);
@@ -129,7 +129,7 @@ export const getProductById = async (req: Request, res: Response) => {
       res,
       200,
       "Product fetched by Id Successfully...",
-      product
+      product,
     );
   } catch (error) {
     console.log(error);
@@ -160,7 +160,7 @@ export const getProductBySellerId = async (req: Request, res: Response) => {
       return responseHandler(
         res,
         400,
-        "Seller Id is not found || Invalid Seller Id"
+        "Seller Id is not found || Invalid Seller Id",
       );
     }
     const product = await Product.find({ seller: sellerId })
@@ -175,7 +175,7 @@ export const getProductBySellerId = async (req: Request, res: Response) => {
       res,
       200,
       "Product fetched by Seller Id Successfully...",
-      product
+      product,
     );
   } catch (error) {
     console.log(error);
