@@ -1,4 +1,5 @@
 import multer from "multer";
+import fs from "fs";
 import {
   v2 as cloudinary,
   UploadApiOptions,
@@ -26,8 +27,22 @@ const uploadToCloudinary = (file: CustomFile): Promise<UploadApiResponse> => {
   return new Promise((resolve, reject) => {
     cloudinary.uploader.upload(file.path, options, (error, result) => {
       if (error) {
+        fs.unlink(file.path, (unlinkError) => {
+          if (unlinkError)
+            console.error(
+              "Error deleting local file after failed upload:",
+              unlinkError,
+            );
+        });
         return reject(error);
       }
+      fs.unlink(file.path, (unlinkError) => {
+        if (unlinkError)
+          console.error(
+            "Error deleting local file after successful upload:",
+            unlinkError,
+          );
+      });
       resolve(result as UploadApiResponse);
     });
   });
@@ -35,7 +50,7 @@ const uploadToCloudinary = (file: CustomFile): Promise<UploadApiResponse> => {
 
 const multerMiddleware: RequestHandler = multer({ dest: "uploads/" }).array(
   "images",
-  4
+  4,
 );
 
 export { multerMiddleware, uploadToCloudinary };
