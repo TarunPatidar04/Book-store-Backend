@@ -95,7 +95,12 @@ export const login = async (req: Request, res: Response) => {
     });
 
     return responseHandler(res, 200, "Login successfully", {
-      user: { name: user.name, email: user.email },
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        profilePicture: user.profilePicture,
+      },
       // accessToken,
     });
   } catch (error) {
