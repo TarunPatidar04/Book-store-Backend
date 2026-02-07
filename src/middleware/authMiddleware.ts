@@ -13,20 +13,20 @@ declare global {
 export const authenticatedUser = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const token = req.cookies.access_token;
   if (!token) {
     return responseHandler(
       res,
       401,
-      "User is not authenticated or no token available"
+      "User is not authenticated or no token available",
     );
   }
   try {
     const decode = jwt.verify(
       token,
-      process.env.JWT_SECRET as string
+      process.env.JWT_SECRET as string,
     ) as jwt.JwtPayload;
     if (!decode) {
       return responseHandler(res, 401, "Not Authorized, User Not Found");
@@ -34,11 +34,10 @@ export const authenticatedUser = (
     req.id = decode.userId;
     next();
   } catch (error) {
-    console.log(error);
     return responseHandler(
       res,
       500,
-      "Not Authorized, Token Not valid or expired"
+      "Not Authorized, Token Not valid or expired",
     );
   }
 };

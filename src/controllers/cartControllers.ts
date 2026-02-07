@@ -18,7 +18,7 @@ export const addToCart = async (req: Request, res: Response) => {
       return responseHandler(
         res,
         400,
-        "You cannot add your own product to the cart"
+        "You cannot add your own product to the cart",
       );
     }
 
@@ -27,7 +27,7 @@ export const addToCart = async (req: Request, res: Response) => {
       cart = new CartItems({ user: userId, items: [] });
     }
     const existingItems = cart.items.find(
-      (item) => item.product.toString() === productId
+      (item) => item.product.toString() === productId,
     );
     if (existingItems) {
       existingItems.quantity += quantity;
@@ -38,7 +38,6 @@ export const addToCart = async (req: Request, res: Response) => {
     await cart.save();
     return responseHandler(res, 200, "Product added to cart", cart);
   } catch (error) {
-    console.log(error);
     return responseHandler(res, 500, "Internal Server Error");
   }
 };
@@ -54,12 +53,11 @@ export const removeFromCart = async (req: Request, res: Response) => {
     }
 
     cart.items = cart.items.filter(
-      (item) => item.product.toString() !== productId
+      (item) => item.product.toString() !== productId,
     );
     await cart.save();
     return responseHandler(res, 200, "Product removed from cart");
   } catch (error) {
-    console.log(error);
     return responseHandler(res, 500, "Internal Server Error");
   }
 };
@@ -68,13 +66,14 @@ export const getCartByUser = async (req: Request, res: Response) => {
   try {
     const userId = req.params.userId;
 
-    let cart = await CartItems.findOne({ user: userId }).populate("items.product");
+    let cart = await CartItems.findOne({ user: userId }).populate(
+      "items.product",
+    );
     if (!cart) {
       return responseHandler(res, 404, "Cart is Empty", { items: [] });
     }
     return responseHandler(res, 200, "User Cart get successfully", cart);
   } catch (error) {
-    console.log(error);
     return responseHandler(res, 500, "Internal Server Error");
   }
 };

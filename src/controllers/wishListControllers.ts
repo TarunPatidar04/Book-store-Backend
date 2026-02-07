@@ -25,7 +25,6 @@ export const addToWishList = async (req: Request, res: Response) => {
     }
     return responseHandler(res, 200, "Product added to wishlist", wishList);
   } catch (error) {
-    console.log(error);
     return responseHandler(res, 500, "Internal Server Error");
   }
 };
@@ -41,12 +40,11 @@ export const removeFromWishList = async (req: Request, res: Response) => {
     }
 
     wishList.products = wishList.products.filter(
-      (id) => id.toString() !== productId
+      (id) => id.toString() !== productId,
     );
     await wishList.save();
     return responseHandler(res, 200, "Product removed from wishlist");
   } catch (error) {
-    console.log(error);
     return responseHandler(res, 500, "Internal Server Error");
   }
 };
@@ -56,7 +54,7 @@ export const getWishListByUser = async (req: Request, res: Response) => {
     const userId = req?.id;
 
     let wishList = await WishList.findOne({ user: userId }).populate(
-      "products"
+      "products",
     );
 
     if (!wishList) {
@@ -67,10 +65,9 @@ export const getWishListByUser = async (req: Request, res: Response) => {
       res,
       200,
       "User WishList get successfully",
-      wishList
+      wishList,
     );
   } catch (error) {
-    console.log(error);
     return responseHandler(res, 500, "Internal Server Error");
   }
 };

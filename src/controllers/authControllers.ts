@@ -34,17 +34,16 @@ export const register = async (req: Request, res: Response) => {
     return responseHandler(
       res,
       201,
-      "User registered successfully, Please check your email for verification"
+      "User registered successfully, Please check your email for verification",
     );
   } catch (error) {
-    console.log(error);
     return responseHandler(res, 500, "Internal server error");
   }
 };
 
 export const verifyEmail = async (req: Request, res: Response) => {
   try {
-    const {token} = req.params;
+    const { token } = req.params;
 
     const user = await UserModel.findOne({ verificationToken: token });
 
@@ -66,7 +65,6 @@ export const verifyEmail = async (req: Request, res: Response) => {
     await user.save();
     return responseHandler(res, 200, "Email verified successfully");
   } catch (error) {
-    console.log(error);
     return responseHandler(res, 500, "Internal server error");
   }
 };
@@ -104,7 +102,6 @@ export const login = async (req: Request, res: Response) => {
       // accessToken,
     });
   } catch (error) {
-    console.log(error);
     return responseHandler(res, 500, "Internal server error");
   }
 };
@@ -124,20 +121,18 @@ export const forgotPassword = async (req: Request, res: Response) => {
     await user.save();
     const result = await sendResetPasswordLinkToEmail(
       user.email,
-      resetPasswordToken
+      resetPasswordToken,
     );
-    console.log("result : ", result);
 
     return responseHandler(res, 200, "Reset password link sent successfully");
   } catch (error) {
-    console.log(error);
     return responseHandler(res, 500, "Internal server error");
   }
 };
 
 export const resetPassword = async (req: Request, res: Response) => {
   try {
-    const {token} = req.params;
+    const { token } = req.params;
     const { newPassword } = req.body;
 
     const user = await UserModel.findOne({
@@ -149,7 +144,7 @@ export const resetPassword = async (req: Request, res: Response) => {
       return responseHandler(
         res,
         400,
-        "Invalid or Expired reset password token"
+        "Invalid or Expired reset password token",
       );
     }
 
@@ -160,7 +155,6 @@ export const resetPassword = async (req: Request, res: Response) => {
     await user.save();
     return responseHandler(res, 200, "Password reset successfully");
   } catch (error) {
-    console.log(error);
     return responseHandler(res, 500, "Internal server error");
   }
 };
@@ -172,7 +166,6 @@ export const logout = async (req: Request, res: Response) => {
     });
     return responseHandler(res, 200, "Logout successfully");
   } catch (error) {
-    console.log(error);
     return responseHandler(res, 500, "Internal server error");
   }
 };
@@ -184,12 +177,12 @@ export const checkUserAuth = async (req: Request, res: Response) => {
       return responseHandler(
         res,
         400,
-        "unAuthenciated, please login to access our data"
+        "unAuthenciated, please login to access our data",
       );
     }
 
     const user = await UserModel.findById(userId).select(
-      "-password -verificationToken -resetPasswordToken -resetPasswordExpire"
+      "-password -verificationToken -resetPasswordToken -resetPasswordExpire",
     );
 
     if (!user) {
@@ -200,14 +193,13 @@ export const checkUserAuth = async (req: Request, res: Response) => {
       res,
       200,
       "User Authenticated(retrived) successfully",
-      user
+      user,
     );
   } catch (error) {
-    console.log(error);
     return responseHandler(
       res,
       500,
-      "Not Authorized, Token Not valid or expired"
+      "Not Authorized, Token Not valid or expired",
     );
   }
 };

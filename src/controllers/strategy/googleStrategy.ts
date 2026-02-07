@@ -18,10 +18,9 @@ passport.use(
       accessToken,
       refreshToken,
       profile,
-      done: (error: any, user?: IUser | false) => void
+      done: (error: any, user?: IUser | false) => void,
     ) => {
       try {
-        console.log("This is my profile", profile);
         const { emails, displayName, photos } = profile;
         let user = await UserModel.findOne({ email: emails?.[0]?.value });
         if (user) {
@@ -43,8 +42,8 @@ passport.use(
       } catch (error) {
         return done(error, false);
       }
-    }
-  )
+    },
+  ),
 );
 
 export default passport;

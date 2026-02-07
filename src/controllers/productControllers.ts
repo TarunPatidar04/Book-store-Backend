@@ -24,7 +24,7 @@ export const createProduct = async (req: Request, res: Response) => {
     const sellerId = req.id;
 
     const images = req.files as Express.Multer.File[];
-    console.log("images", images);
+
     if (!images || images.length == 0) {
       return responseHandler(res, 400, "Please upload at least one image");
     }
@@ -58,7 +58,6 @@ export const createProduct = async (req: Request, res: Response) => {
     const uploadPromise = images.map((file) => uploadToCloudinary(file as any));
     const uploadImages = await Promise.all(uploadPromise);
     const imageUrl = uploadImages.map((image) => image.secure_url);
-    console.log("imageUrl", imageUrl);
 
     const product = new Product({
       title,
@@ -86,7 +85,6 @@ export const createProduct = async (req: Request, res: Response) => {
       product,
     );
   } catch (error) {
-    console.log(error);
     return responseHandler(res, 500, "Internal Server Error");
   }
 };
@@ -104,7 +102,6 @@ export const getAllProducts = async (req: Request, res: Response) => {
       products,
     );
   } catch (error) {
-    console.log(error);
     return responseHandler(res, 500, "Internal Server Error");
   }
 };
@@ -132,7 +129,6 @@ export const getProductById = async (req: Request, res: Response) => {
       product,
     );
   } catch (error) {
-    console.log(error);
     return responseHandler(res, 500, "Internal Server Error");
   }
 };
@@ -148,7 +144,6 @@ export const deleteProduct = async (req: Request, res: Response) => {
 
     return responseHandler(res, 200, "Product deleted Successfully...");
   } catch (error) {
-    console.log(error);
     return responseHandler(res, 500, "Internal Server Error");
   }
 };
@@ -178,7 +173,6 @@ export const getProductBySellerId = async (req: Request, res: Response) => {
       product,
     );
   } catch (error) {
-    console.log(error);
     return responseHandler(res, 500, "Internal Server Error");
   }
 };

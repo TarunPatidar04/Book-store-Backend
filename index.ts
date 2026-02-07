@@ -39,7 +39,6 @@ app.use("/api/user", userRouter);
 app.use("/api/order", orderRouter);
 
 app.get("/", (req, res) => {
-  console.log("start a server");
   res.send("Hello World!");
 });
 

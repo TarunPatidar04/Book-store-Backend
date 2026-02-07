@@ -62,7 +62,6 @@ export const createOrUpdateOrder = async (req: Request, res: Response) => {
       return responseHandler(res, 200, "Order created Successfully...", order);
     }
   } catch (error) {
-    console.log(error);
     return responseHandler(res, 500, "Internal Server Error");
   }
 };
@@ -87,7 +86,6 @@ export const getOrderById = async (req: Request, res: Response) => {
       order,
     );
   } catch (error) {
-    console.log(error);
     return responseHandler(res, 500, "Internal Server Error");
   }
 };
