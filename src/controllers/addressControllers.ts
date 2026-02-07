@@ -12,7 +12,7 @@ export const createOrUpdateByUserId = async (req: Request, res: Response) => {
       phoneNumber,
       city,
       state,
-      pincode,
+      pinCode,
       addressId,
     } = req.body;
 
@@ -20,11 +20,11 @@ export const createOrUpdateByUserId = async (req: Request, res: Response) => {
       return responseHandler(res, 400, "User Id not found");
     }
 
-    if (!addressLine1 || !phoneNumber || !state || !city || !pincode) {
+    if (!addressLine1 || !phoneNumber || !state || !city || !pinCode) {
       return responseHandler(
         res,
         400,
-        "Please Enter All Value to create new address"
+        "Please Enter All Value to create new address",
       );
     }
 
@@ -39,13 +39,13 @@ export const createOrUpdateByUserId = async (req: Request, res: Response) => {
       existingAddress.phoneNumber = phoneNumber;
       existingAddress.city = city;
       existingAddress.state = state;
-      existingAddress.pinCode = pincode;
+      existingAddress.pinCode = pinCode;
       await existingAddress.save();
       return responseHandler(
         res,
         200,
         "Address updated successfully",
-        existingAddress
+        existingAddress,
       );
     } else {
       const newAddress = new AddressModel({
@@ -55,7 +55,7 @@ export const createOrUpdateByUserId = async (req: Request, res: Response) => {
         phoneNumber,
         city,
         state,
-        pinCode: pincode,
+        pinCode: pinCode,
       });
       await newAddress.save();
       await UserModel.findByIdAndUpdate(
@@ -63,13 +63,13 @@ export const createOrUpdateByUserId = async (req: Request, res: Response) => {
         {
           $push: { addresses: newAddress._id },
         },
-        { new: true }
+        { new: true },
       );
       return responseHandler(
         res,
         200,
         "Address created successfully",
-        newAddress
+        newAddress,
       );
     }
   } catch (error) {
