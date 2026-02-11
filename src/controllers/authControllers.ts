@@ -63,7 +63,15 @@ export const verifyEmail = async (req: Request, res: Response) => {
     });
 
     await user.save();
-    return responseHandler(res, 200, "Email verified successfully");
+    return responseHandler(res, 200, "Email verified successfully", {
+      accessToken,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        profilePicture: user.profilePicture,
+      },
+    });
   } catch (error) {
     return responseHandler(res, 500, "Internal server error");
   }
@@ -99,7 +107,7 @@ export const login = async (req: Request, res: Response) => {
         email: user.email,
         profilePicture: user.profilePicture,
       },
-      // accessToken,
+      accessToken,
     });
   } catch (error) {
     return responseHandler(res, 500, "Internal server error");

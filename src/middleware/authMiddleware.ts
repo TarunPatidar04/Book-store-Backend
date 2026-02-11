@@ -15,7 +15,17 @@ export const authenticatedUser = (
   res: Response,
   next: NextFunction,
 ) => {
-  const token = req.cookies.access_token;
+  // Check for token in cookies first, then in Authorization header
+  let token = req.cookies.access_token;
+
+  // Fallback to Authorization header if cookie is not present
+  if (!token) {
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      token = authHeader.substring(7);
+    }
+  }
+
   if (!token) {
     return responseHandler(
       res,
