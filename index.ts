@@ -39,7 +39,12 @@ app.use("/api/user", userRouter);
 app.use("/api/order", orderRouter);
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.status(200).json({
+    success: true,
+    message: "Welcome to Book-Kart API 📚",
+    status: "Server is running successfully",
+    timestamp: new Date().toISOString(),
+  });
 });
 
 app.listen(PORT, () => {
