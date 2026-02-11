@@ -15,7 +15,7 @@ import orderRouter from "./src/routes/orderRouter";
 import passport from "./src/controllers/strategy/googleStrategy";
 
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || "*",
+  origin: process.env.FRONTEND_URL || "http://localhost:3000",
   credentials: true,
 };
 

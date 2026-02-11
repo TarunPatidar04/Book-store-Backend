@@ -8,20 +8,16 @@ router.post(
   "/",
   authenticatedUser,
   multerMiddleware,
-  ProductController.createProduct
+  ProductController.createProduct,
 );
 
-router.get("/", authenticatedUser, ProductController.getAllProducts);
-router.get("/:id", authenticatedUser, ProductController.getProductById);
-router.get(
-  "/seller/:sellerId",
-  authenticatedUser,
-  ProductController.getProductBySellerId
-);
+router.get("/", ProductController.getAllProducts);
+router.get("/:id", ProductController.getProductById);
+router.get("/seller/:sellerId", ProductController.getProductBySellerId);
 router.delete(
   "/seller/:productId",
   authenticatedUser,
-  ProductController.deleteProduct
+  ProductController.deleteProduct,
 );
 
 export default router;
